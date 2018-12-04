@@ -23,27 +23,45 @@ renderInfo = data => {
       <p>  ${data[prop].text} <br>
          ${hour}  ${date}
       </p></b></br>
-      <input type="text" id="myTextResponse" value= "@${data[prop].user.screenName} " placeholder="Escribe tu respuesta" class="inp"><a class='btn-delete send' data-message="${data[prop].id}"><i class="fab fa-telegram-plane"></i></a>
+      <input type="text" id="" value= '@${data[prop].user.screenName} ' placeholder="Escribe tu respuesta" class="inp"><a class='btn-send' data-message="${data[prop].user.screenName}"><i class="fab fa-telegram-plane"></i></a>
 </ul>`;
       };
       container.innerHTML = result;
 
-      if (container != "") {
-        let elementsDelete = document.getElementsByClassName("btn-delete");
-        for (let i = 0; i < elementsDelete.length; i++) {
+      if (container != '') {
+        let elementsTweets = document.getElementsByClassName("btn-send");
+
+        for (let i = 0; i < elementsTweets.length; i++) {
+          let message = document.getElementsByClassName("inp")[0].value;
           //console.log(elementsDelete[i]);
-          elementsDelete[i].addEventListener("click", e => {
+          elementsTweets[i].addEventListener("click", e => {
             let key = e.target;
-            let keyDataDelete = key.getAttribute("data-message");
-            console.log(keyDataDelete);
+            let keyData = key.getAttribute("data-message");
+            console.log(keyData,data[prop].user.screenName, )
+            tweetResponse(keyData,message);
           });
         }
       }
     }
 };
 
-tweetResponse = () => {
-  console.log("funcion tweetResponse");
+tweetResponse = (keyData, message) => {
+  console.log("funcion tweetResponse")
+  console.log(keyData)
+
+  var url = 'https://wmt-laboratoria.herokuapp.com/tweets';
+  var data = `${message} Tu pedido está siendo atendido`;
+
+
+  fetch(url, {
+          method: 'POST',
+          body: data, // data can be `string` or {object}!
+          headers: {
+              'Content-Type': 'text/plain'
+          }
+      }).then(res => res.json())
+      .catch(error => console.error('Error:', error))
+      .then(response => console.log('Success:', response));
 };
 
 renderInfo()
